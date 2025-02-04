@@ -3,6 +3,7 @@ import InstagramHeader from "../components/InstagramHeader";
 import Stories from "../components/Stories";
 import Post from "../components/Post";
 import Navigation from "../components/Navigation";
+import CreatePost from "../components/CreatePost";
 import { fetchPosts, fetchStories } from "../services/api";
 import { useToast } from "../components/ui/use-toast";
 
@@ -45,6 +46,7 @@ const Index = () => {
       ) : (
         <Stories stories={stories || []} />
       )}
+      <CreatePost />
       <div className="space-y-4">
         {loadingPosts ? (
           Array.from({ length: 3 }).map((_, i) => (
