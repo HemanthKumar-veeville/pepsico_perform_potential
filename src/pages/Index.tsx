@@ -1,50 +1,59 @@
+import { useQuery } from "@tanstack/react-query";
 import InstagramHeader from "../components/InstagramHeader";
 import Stories from "../components/Stories";
 import Post from "../components/Post";
 import Navigation from "../components/Navigation";
-
-const posts = [
-  {
-    id: 1,
-    username: "rajeshvorkady",
-    userImage: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png",
-    postImage: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png",
-    caption: "Fool rush in. And the get the best seats. On the wrong bus.",
-    likes: 20,
-    timeAgo: "5 days ago"
-  },
-  {
-    id: 2,
-    username: "pairedpassportz",
-    userImage: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png",
-    postImage: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png",
-    caption: "Adventure awaits at every corner! 🌎✈️",
-    likes: 45,
-    timeAgo: "2 days ago"
-  },
-  {
-    id: 3,
-    username: "spurthy._ram",
-    userImage: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png",
-    postImage: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png",
-    caption: "Living my best life! 🌟",
-    likes: 67,
-    timeAgo: "1 day ago"
-  }
-];
+import { fetchPosts, fetchStories } from "../services/api";
+import { useToast } from "../components/ui/use-toast";
 
 const Index = () => {
+  const { toast } = useToast();
+
+  const { data: stories, isLoading: loadingStories } = useQuery({
+    queryKey: ['stories'],
+    queryFn: fetchStories,
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to load stories. Please try again later.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const { data: posts, isLoading: loadingPosts } = useQuery({
+    queryKey: ['posts'],
+    queryFn: fetchPosts,
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to load posts. Please try again later.",
+        variant: "destructive"
+      });
+    }
+  });
+
   return (
     <div className="min-h-screen bg-instagram-dark">
       <InstagramHeader />
-      <Stories />
+      {loadingStories ? (
+        <div className="h-28 bg-instagram-dark animate-pulse" />
+      ) : (
+        <Stories stories={stories || []} />
+      )}
       <div className="space-y-4">
-        {posts.map((post) => (
-          <Post key={post.id} {...post} />
-        ))}
+        {loadingPosts ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="w-full aspect-square bg-gray-800 animate-pulse" />
+          ))
+        ) : (
+          posts?.map((post) => (
+            <Post key={post.id} {...post} />
+          ))
+        )}
       </div>
       <Navigation />
-      <div className="h-16" /> {/* Spacing for fixed navigation */}
+      <div className="h-16" />
     </div>
   );
 };

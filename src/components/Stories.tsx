@@ -1,40 +1,11 @@
 import { Plus } from "lucide-react";
+import { Story } from "../types/instagram";
 
-const Stories = () => {
-  const stories = [
-    { 
-      id: 1, 
-      username: "Your story", 
-      isUser: true,
-      image: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png"
-    },
-    { 
-      id: 2, 
-      username: "pairedpassportz",
-      image: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png"
-    },
-    { 
-      id: 3, 
-      username: "spurthy._ram",
-      image: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png"
-    },
-    { 
-      id: 4, 
-      username: "tejaswinirad",
-      image: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png"
-    },
-    { 
-      id: 5, 
-      username: "travel_buddy",
-      image: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png"
-    },
-    { 
-      id: 6, 
-      username: "wanderlust",
-      image: "/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png"
-    }
-  ];
+interface StoriesProps {
+  stories: Story[];
+}
 
+const Stories = ({ stories }: StoriesProps) => {
   return (
     <div className="flex overflow-x-auto hide-scrollbar px-4 py-4 space-x-4 bg-instagram-dark">
       {stories.map((story) => (
