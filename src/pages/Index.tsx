@@ -12,24 +12,28 @@ const Index = () => {
   const { data: stories, isLoading: loadingStories } = useQuery({
     queryKey: ['stories'],
     queryFn: fetchStories,
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to load stories. Please try again later.",
-        variant: "destructive"
-      });
+    meta: {
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Failed to load stories. Please try again later.",
+          variant: "destructive"
+        });
+      }
     }
   });
 
   const { data: posts, isLoading: loadingPosts } = useQuery({
     queryKey: ['posts'],
     queryFn: fetchPosts,
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to load posts. Please try again later.",
-        variant: "destructive"
-      });
+    meta: {
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Failed to load posts. Please try again later.",
+          variant: "destructive"
+        });
+      }
     }
   });
 
