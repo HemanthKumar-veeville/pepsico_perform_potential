@@ -16,7 +16,7 @@ import "./App.css";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import ProtectedRoute from "@/components/ProtectedRoute";
-
+import Department from "@/pages/Department";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -36,11 +36,6 @@ const App = () => {
 };
 
 const AppContent = () => {
-  const location = useLocation();
-  const showNavigation = !["create", "signin"].includes(
-    location.pathname.slice(1)
-  );
-
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   useEffect(() => {
@@ -52,7 +47,7 @@ const AppContent = () => {
 
   return (
     <Layout>
-      <main className={showNavigation ? "pb-[60px]" : ""}>
+      <main className="pb-[60px]">
         <Routes>
           <Route
             path="/signin"
@@ -78,10 +73,18 @@ const AppContent = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/department"
+            element={
+              <ProtectedRoute>
+                <Department />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      {showNavigation && <Navigation />}
+      <Navigation />
     </Layout>
   );
 };
