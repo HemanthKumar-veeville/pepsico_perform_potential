@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal } from "lucide-react";
-import { useToast } from "./ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface PostProps {
   username: string;
@@ -30,10 +30,22 @@ const Post = ({ username, userImage, postImage, caption, likes: initialLikes, ti
   };
 
   const handleShare = () => {
-    toast({
-      title: "Share",
-      description: "Share feature coming soon!",
-    });
+    // Simulate sharing functionality
+    navigator.clipboard.writeText(`Check out this post from ${username}: ${postImage}`)
+      .then(() => {
+        toast({
+          title: "Link copied!",
+          description: "Post link has been copied to your clipboard",
+          duration: 2000,
+        });
+      })
+      .catch(() => {
+        toast({
+          title: "Share",
+          description: "Unable to copy link. Please try again.",
+          variant: "destructive",
+        });
+      });
   };
 
   const handleSave = () => {
