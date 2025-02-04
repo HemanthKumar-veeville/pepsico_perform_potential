@@ -1,25 +1,34 @@
 import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal } from "lucide-react";
 
-const Post = () => {
+interface PostProps {
+  username: string;
+  userImage: string;
+  postImage: string;
+  caption: string;
+  likes: number;
+  timeAgo: string;
+}
+
+const Post = ({ username, userImage, postImage, caption, likes, timeAgo }: PostProps) => {
   return (
     <div className="bg-instagram-dark">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 rounded-full overflow-hidden">
             <img
-              src="/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png"
-              alt="Profile"
+              src={userImage}
+              alt={username}
               className="w-full h-full object-cover"
             />
           </div>
-          <span className="text-instagram-text font-semibold">rajeshvorkady</span>
+          <span className="text-instagram-text font-semibold">{username}</span>
         </div>
         <MoreHorizontal className="text-instagram-text" />
       </div>
 
       <div className="w-full aspect-square bg-gray-100">
         <img
-          src="/lovable-uploads/3a913107-3673-4631-8090-0c324cff9c02.png"
+          src={postImage}
           alt="Post content"
           className="w-full h-full object-contain"
         />
@@ -35,15 +44,15 @@ const Post = () => {
           <Bookmark className="w-6 h-6 text-instagram-text" />
         </div>
 
-        <div className="text-instagram-text mb-2">20 likes</div>
+        <div className="text-instagram-text mb-2">{likes} likes</div>
         
         <div className="text-instagram-text">
-          <span className="font-semibold mr-2">rajeshvorkady</span>
-          Fool rush in. And the get the best seats. On the wrong bus.
+          <span className="font-semibold mr-2">{username}</span>
+          {caption}
         </div>
 
         <div className="text-instagram-secondary text-sm mt-2">View all comments</div>
-        <div className="text-instagram-secondary text-xs mt-1">5 days ago</div>
+        <div className="text-instagram-secondary text-xs mt-1">{timeAgo}</div>
       </div>
     </div>
   );
