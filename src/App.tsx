@@ -17,6 +17,8 @@ import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Department from "@/pages/Department";
+import Profile from "./pages/Profile";
+import Users from "./pages/Users";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -78,6 +80,15 @@ const AppContent = () => {
             element={
               <ProtectedRoute>
                 <Department />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute>
+                <Users />
               </ProtectedRoute>
             }
           />

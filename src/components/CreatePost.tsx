@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import axiosInstance from "../api/axios";
+import InstagramHeader from "@/components/InstagramHeader";
+
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -200,6 +202,7 @@ const CreatePost = () => {
 
   return (
     <div className="min-h-screen bg-instagram-dark">
+      <InstagramHeader />
       <div className="max-w-lg mx-auto">
         <div className="flex justify-between items-center p-4 border-b border-gray-800">
           <button
