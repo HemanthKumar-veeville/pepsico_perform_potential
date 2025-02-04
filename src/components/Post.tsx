@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import axiosInstance from "../api/axios";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
 
 interface PostProps {
   username: string;
@@ -37,25 +40,43 @@ const Post = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [attachmentUrls, setAttachmentUrls] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+  const [isPreloading, setIsPreloading] = useState(true);
 
   const isDescriptionSlide = currentIndex === 0;
   const actualAttachmentIndex = currentIndex - 1;
 
   useEffect(() => {
-    const fetchAttachmentUrls = async () => {
+    const preloadImages = async () => {
       try {
         const urls = await Promise.all(
           attachments.map(async (key) => {
             const response = await axiosInstance.get(`/files/${key}`);
-            console.log({ response });
             return (
               response?.data?.data?.url ||
               "https://picsum.photos/seed/100/600/600"
             );
           })
         );
-        console.log({ urls });
         setAttachmentUrls(urls);
+
+        // Preload all images
+        await Promise.all(
+          urls.map((url, index) => {
+            return new Promise((resolve) => {
+              const img = new Image();
+              img.onload = () => {
+                setLoadedImages((prev) => new Set([...prev, index]));
+                resolve(null);
+              };
+              img.onerror = () => {
+                console.error(`Failed to load image: ${url}`);
+                resolve(null);
+              };
+              img.src = url;
+            });
+          })
+        );
       } catch (error) {
         console.error("Error fetching attachment URLs:", error);
         toast({
@@ -65,10 +86,11 @@ const Post = ({
         });
       } finally {
         setIsLoading(false);
+        setIsPreloading(false);
       }
     };
 
-    fetchAttachmentUrls();
+    preloadImages();
   }, [attachments]);
 
   const handleLike = () => {
@@ -120,6 +142,38 @@ const Post = ({
     });
   };
 
+  const PostSkeleton = () => (
+    <div className="animate-pulse">
+      <div className="flex items-center justify-between p-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-full bg-gray-700" />
+          <div className="h-4 w-24 bg-gray-700 rounded" />
+        </div>
+        <div className="w-6 h-6 bg-gray-700 rounded" />
+      </div>
+      <div className="w-full aspect-square bg-gray-800" />
+      <div className="p-4">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex space-x-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="w-6 h-6 bg-gray-700 rounded" />
+            ))}
+          </div>
+          <div className="w-6 h-6 bg-gray-700 rounded" />
+        </div>
+        <div className="flex justify-between items-baseline mb-4">
+          <div className="h-4 w-20 bg-gray-700 rounded" />
+          <div className="h-4 w-32 bg-gray-700 rounded" />
+          <div className="h-3 w-16 bg-gray-700 rounded" />
+        </div>
+      </div>
+    </div>
+  );
+
+  if (isLoading || isPreloading) {
+    return <PostSkeleton />;
+  }
+
   return (
     <div className="bg-instagram-dark">
       <div className="flex items-center justify-between p-4">
@@ -147,9 +201,12 @@ const Post = ({
             </div>
           ) : (
             <>
-              {isLoading ? (
+              {!loadedImages.has(actualAttachmentIndex) ? (
                 <div className="w-full h-full flex items-center justify-center bg-gray-800">
-                  <div className="text-white">Loading...</div>
+                  <Spinner
+                    size="lg"
+                    className="border-4 border-gray-600 border-t-white"
+                  />
                 </div>
               ) : (
                 <img
@@ -158,6 +215,7 @@ const Post = ({
                     attachments.length
                   }`}
                   className="w-full h-full object-contain"
+                  loading="lazy"
                   onDoubleClick={handleLike}
                 />
               )}
@@ -168,7 +226,7 @@ const Post = ({
             <>
               <button
                 onClick={previousSlide}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 rounded-full p-1.5 text-white hover:bg-black/70 transition"
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 rounded-full p-1.5 text-white hover:bg-black/70 transition backdrop-blur-sm shadow-lg"
                 aria-label="Previous image"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -176,22 +234,23 @@ const Post = ({
 
               <button
                 onClick={nextSlide}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 rounded-full p-1.5 text-white hover:bg-black/70 transition"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 rounded-full p-1.5 text-white hover:bg-black/70 transition backdrop-blur-sm shadow-lg"
                 aria-label="Next image"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
 
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1">
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm">
                 {[...Array(attachments.length + 1)].map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-all ${
+                    className={cn(
+                      "w-2 h-2 rounded-full transition-all shadow-[0_0_2px_rgba(0,0,0,0.4)] ring-2 ring-black/20",
                       index === currentIndex
                         ? "bg-white scale-110"
-                        : "bg-white/50"
-                    }`}
+                        : "bg-white/70 hover:bg-white/90"
+                    )}
                     aria-label={`Go to ${
                       index === 0 ? "description" : `image ${index}`
                     }`}
