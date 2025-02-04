@@ -1,5 +1,12 @@
 import { useState, useRef } from "react";
-import { Camera, Upload, X, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Camera,
+  Upload,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -16,6 +23,7 @@ const CreatePost = () => {
   const { toast } = useToast();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -126,20 +134,48 @@ const CreatePost = () => {
       return;
     }
 
-    // Here we would normally send the data to a backend
+    setIsSubmitting(true);
     try {
+      // Upload files one by one
+      const fileUrls = [];
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const uploadResponse = await axiosInstance.post(
+          "/files/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        fileUrls.push(uploadResponse.data);
+      }
+
+      // Then create the post with the file URLs
+
       const submissionData = {
-        title: title,
-        description: description,
-        files: files,
+        title,
+        description,
+        supporting_documents: fileUrls?.map((url) => url?.data?.key),
       };
-      console.log({ submissionData });
+
       const response = await axiosInstance.post("/ideas", submissionData);
-      console.log({ response });
+
       toast({
         title: "Success!",
         description: "Your post has been created",
       });
+
+      // Reset form and navigate back
+      setTitle("");
+      setDescription("");
+      setFiles([]);
+      setPreviewUrls([]);
+      navigate("/");
     } catch (error) {
       console.error("Error submitting idea:", error);
       toast({
@@ -147,14 +183,9 @@ const CreatePost = () => {
         description: "Failed to submit idea",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // Reset form and navigate back
-    setTitle("");
-    setDescription("");
-    setFiles([]);
-    setPreviewUrls([]);
-    navigate("/");
   };
 
   const handleCapture = () => {
@@ -293,9 +324,16 @@ const CreatePost = () => {
                   ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0"
                   : "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-purple-200/50 cursor-not-allowed hover:bg-none border-0"
               )}
-              disabled={!isFormValid}
+              disabled={!isFormValid || isSubmitting}
             >
-              Post
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Posting...
+                </>
+              ) : (
+                "Post"
+              )}
             </Button>
           </form>
         </div>
