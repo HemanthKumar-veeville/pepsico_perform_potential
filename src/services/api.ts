@@ -4,12 +4,11 @@ import { Post, Story } from "../types/instagram";
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const fetchPosts = async (): Promise<Post[]> => {
-  // Fetch random images from Picsum
-  await delay(1000); // Simulate network delay
+ 
   
-  const posts: Post[] = [];
-  for(let i = 1; i <= 10; i++) {
-    posts.push({
+    const posts: Post[] = [];
+    for(let i = 1; i <= 10; i++) {
+      posts.push({
       id: i,
       username: `user_${Math.floor(Math.random() * 1000)}`,
       userImage: `https://picsum.photos/seed/${i}/200/200`,

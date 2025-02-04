@@ -6,7 +6,7 @@ import { Textarea } from "./ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-
+import axiosInstance from "../api/axios";
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -114,7 +114,7 @@ const CreatePost = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim() || !description.trim() || files.length === 0) {
@@ -127,11 +127,27 @@ const CreatePost = () => {
     }
 
     // Here we would normally send the data to a backend
-    console.log("Submitting post:", { title, description, files });
-    toast({
-      title: "Success!",
-      description: "Your post has been created",
-    });
+    try {
+      const submissionData = {
+        title: title,
+        description: description,
+        files: files,
+      };
+      console.log({ submissionData });
+      const response = await axiosInstance.post("/ideas", submissionData);
+      console.log({ response });
+      toast({
+        title: "Success!",
+        description: "Your post has been created",
+      });
+    } catch (error) {
+      console.error("Error submitting idea:", error);
+      toast({
+        title: "Error",
+        description: "Failed to submit idea",
+        variant: "destructive",
+      });
+    }
 
     // Reset form and navigate back
     setTitle("");

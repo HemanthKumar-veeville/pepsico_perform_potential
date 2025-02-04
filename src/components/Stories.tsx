@@ -9,11 +9,18 @@ const Stories = ({ stories }: StoriesProps) => {
   return (
     <div className="flex overflow-x-auto hide-scrollbar px-4 py-4 space-x-4 bg-instagram-dark">
       {stories.map((story) => (
-        <div key={story.id} className="flex flex-col items-center flex-shrink-0">
-          <div className={`relative ${!story.isUser ? 'p-[2px] rounded-full bg-story-gradient' : ''}`}>
+        <div
+          key={story.id}
+          className="flex flex-col items-center flex-shrink-0"
+        >
+          <div
+            className={`relative ${
+              !story.isUser ? "p-[2px] rounded-full bg-story-gradient" : ""
+            }`}
+          >
             <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-instagram-dark bg-gray-300">
-              <img 
-                src={story.image} 
+              <img
+                src={story.image}
                 alt={story.username}
                 className="w-full h-full object-cover"
               />

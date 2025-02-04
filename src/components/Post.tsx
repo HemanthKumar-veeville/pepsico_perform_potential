@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  Send,
+  Bookmark,
+  MoreHorizontal,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface PostProps {
@@ -11,7 +17,14 @@ interface PostProps {
   timeAgo: string;
 }
 
-const Post = ({ username, userImage, postImage, caption, likes: initialLikes, timeAgo }: PostProps) => {
+const Post = ({
+  username,
+  userImage,
+  postImage,
+  caption,
+  likes: initialLikes,
+  timeAgo,
+}: PostProps) => {
   const [likes, setLikes] = useState(initialLikes);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -19,7 +32,7 @@ const Post = ({ username, userImage, postImage, caption, likes: initialLikes, ti
 
   const handleLike = () => {
     setIsLiked(!isLiked);
-    setLikes(prev => isLiked ? prev - 1 : prev + 1);
+    setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
   };
 
   const handleComment = () => {
@@ -31,7 +44,8 @@ const Post = ({ username, userImage, postImage, caption, likes: initialLikes, ti
 
   const handleShare = () => {
     // Simulate sharing functionality
-    navigator.clipboard.writeText(`Check out this post from ${username}: ${postImage}`)
+    navigator.clipboard
+      .writeText(`Check out this post from ${username}: ${postImage}`)
       .then(() => {
         toast({
           title: "Link copied!",
@@ -84,33 +98,43 @@ const Post = ({ username, userImage, postImage, caption, likes: initialLikes, ti
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-4">
-            <Heart 
-              className={`w-6 h-6 cursor-pointer ${isLiked ? 'text-red-500 fill-red-500' : 'text-instagram-text'}`} 
+            <Heart
+              className={`w-6 h-6 cursor-pointer ${
+                isLiked ? "text-red-500 fill-red-500" : "text-instagram-text"
+              }`}
               onClick={handleLike}
             />
-            <MessageCircle 
-              className="w-6 h-6 text-instagram-text cursor-pointer" 
+            <MessageCircle
+              className="w-6 h-6 text-instagram-text cursor-pointer"
               onClick={handleComment}
             />
-            <Send 
-              className="w-6 h-6 text-instagram-text cursor-pointer" 
+            <Send
+              className="w-6 h-6 text-instagram-text cursor-pointer"
               onClick={handleShare}
             />
           </div>
-          <Bookmark 
-            className={`w-6 h-6 cursor-pointer ${isSaved ? 'text-instagram-text fill-instagram-text' : 'text-instagram-text'}`}
+          <Bookmark
+            className={`w-6 h-6 cursor-pointer ${
+              isSaved
+                ? "text-instagram-text fill-instagram-text"
+                : "text-instagram-text"
+            }`}
             onClick={handleSave}
           />
         </div>
 
-        <div className="text-instagram-text mb-2">{likes.toLocaleString()} likes</div>
-        
+        <div className="text-instagram-text mb-2">
+          {likes.toLocaleString()} likes
+        </div>
+
         <div className="text-instagram-text">
           <span className="font-semibold mr-2">{username}</span>
           {caption}
         </div>
 
-        <div className="text-instagram-secondary text-sm mt-2 cursor-pointer">View all comments</div>
+        <div className="text-instagram-secondary text-sm mt-2 cursor-pointer">
+          View all comments
+        </div>
         <div className="text-instagram-secondary text-xs mt-1">{timeAgo}</div>
       </div>
     </div>

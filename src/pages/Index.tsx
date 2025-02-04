@@ -4,6 +4,12 @@ import Stories from "../components/Stories";
 import Post from "../components/Post";
 import { fetchPosts, fetchStories } from "../services/api";
 import { useToast } from "../components/ui/use-toast";
+import axiosInstance from "../api/axios";
+
+// Define the ApiResponse interface
+interface ApiResponse {
+  data: any[]; // Replace 'any' with your actual idea type
+}
 
 const Index = () => {
   const { toast } = useToast();
@@ -30,6 +36,24 @@ const Index = () => {
         toast({
           title: "Error",
           description: "Failed to load posts. Please try again later.",
+          variant: "destructive",
+        });
+      },
+    },
+  });
+
+  // Replace useEffect with useQuery for ideas
+  const { data: ideas } = useQuery({
+    queryKey: ["ideas"],
+    queryFn: async () => {
+      const response = await axiosInstance.get<ApiResponse>("/ideas");
+      return response.data.data;
+    },
+    meta: {
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Failed to load ideas. Please try again later.",
           variant: "destructive",
         });
       },
