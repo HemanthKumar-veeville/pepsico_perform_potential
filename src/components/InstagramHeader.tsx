@@ -5,7 +5,7 @@ const InstagramHeader = () => {
     <div className="flex justify-between items-center px-4 py-2 bg-instagram-dark">
       <div className="flex items-center">
         <h1 className="text-2xl font-semibold text-instagram-text font-['Instagram Sans']">
-          Instagram
+          Pepsico
         </h1>
         <svg
           className="w-3 h-3 ml-1 mt-2 text-instagram-text"
