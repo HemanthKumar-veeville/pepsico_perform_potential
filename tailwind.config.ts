@@ -13,14 +13,15 @@ export default {
     extend: {
       colors: {
         instagram: {
-          dark: "#222222",
+          dark: "#404040",
           text: "#ffffff",
           secondary: "#8e8e8e",
           link: "#00376b",
         },
       },
       backgroundImage: {
-        'story-gradient': 'linear-gradient(45deg, #F97316, #D946EF)',
+        'story-gradient': 'linear-gradient(135deg, #0EA5E9, #2563EB, #1E3A8A)',
+        'story-gradient-hover': 'linear-gradient(135deg, #0284C7, #1D4ED8, #172554)',
       },
     },
   },

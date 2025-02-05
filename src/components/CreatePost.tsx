@@ -324,8 +324,8 @@ const CreatePost = () => {
               className={cn(
                 "w-full font-semibold text-sm",
                 isFormValid
-                  ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0"
-                  : "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-purple-200/50 cursor-not-allowed hover:bg-none border-0"
+                  ? "bg-gradient-to-r from-blue-900 to-sky-500 hover:from-blue-950 hover:to-sky-600 text-white border-0"
+                  : "bg-gradient-to-r from-sky-500/30 to-blue-900/30 text-sky-200/50 cursor-not-allowed hover:bg-none border-0"
               )}
               disabled={!isFormValid || isSubmitting}
             >

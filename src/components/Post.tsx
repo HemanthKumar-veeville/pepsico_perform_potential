@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, TouchEvent } from "react";
 import {
   Heart,
   MessageCircle,
@@ -42,9 +42,38 @@ const Post = ({
   const [isLoading, setIsLoading] = useState(true);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   const [isPreloading, setIsPreloading] = useState(true);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const isDescriptionSlide = currentIndex === 0;
   const actualAttachmentIndex = currentIndex - 1;
+
+  // Required minimum distance between touch start and touch end to be detected as swipe
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    }
+    if (isRightSwipe) {
+      previousSlide();
+    }
+  };
 
   useEffect(() => {
     const preloadImages = async () => {
@@ -191,7 +220,12 @@ const Post = ({
       </div>
 
       <div className="relative w-full aspect-square bg-gray-100">
-        <div className="relative h-full">
+        <div
+          className="relative h-full"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
           {isDescriptionSlide ? (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-600 p-8">
               <div className="max-w-lg text-center text-white">
