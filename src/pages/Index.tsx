@@ -129,7 +129,7 @@ const Index = () => {
           ideas?.map((idea) => (
             <Post
               key={idea.id}
-              username={idea.userName}
+              username={idea.user_name}
               userImage={`https://picsum.photos/seed/1/200/200`}
               attachments={idea.supporting_documents}
               caption={idea.title}
